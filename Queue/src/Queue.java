@@ -12,20 +12,31 @@ public class Queue <E>{
     private Node<E> front;
     private Node<E> back;
 
+    public Queue() {
+        this.front = null;
+        this.back = null;
+    }
+
     public void add(E elem) {
-        if (front == null) {
-            front = new Node<>(elem, null);
-            back = front;
+        /*
+        Adds the given element to the back of the queue
+         */
+        if (this.front == null) {
+            this.front = new Node<>(elem, null);
+            this.back = this.front;
         } else {
-            back.next = new Node<>(elem, null);
-            back = back.next;
+            this.back.next = new Node<>(elem, null);
+            this.back = this.back.next;
         }
     }
 
     public E remove() {
-        if (front != null) {
-            E elem = front.data;
-            front = front.next;
+        /*
+        Removes the element at the beginning of the queue and returns the data
+         */
+        if (this.front != null) {
+            E elem = this.front.data;
+            this.front = this.front.next;
             return elem;
         }
         System.out.println("Queue is empty");
@@ -33,7 +44,10 @@ public class Queue <E>{
     }
 
     public void printContents() {
-        Node<E> current = front;
+        /*
+        Prints the contents of the queue in order
+         */
+        Node<E> current = this.front;
 
         while (current != null) {
             System.out.println(current.data);
@@ -43,6 +57,9 @@ public class Queue <E>{
 
 
     public static void main(String[] args) {
+        /*
+        Creates a new queue and runs through its methods
+         */
         Queue<Dwarf> queue = new Queue<>();
         queue.add(new Dwarf("Happy"));
         queue.add(new Dwarf("Grumpy"));
@@ -51,7 +68,6 @@ public class Queue <E>{
         System.out.println(queue.remove());
         System.out.println(queue.remove());
         queue.add(new Dwarf("Jimmy"));
-        System.out.println(queue.remove());
         System.out.println(queue.remove());
         System.out.println(queue.remove());
 
