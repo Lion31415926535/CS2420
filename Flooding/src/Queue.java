@@ -55,6 +55,13 @@ public class Queue <E>{
         }
     }
 
+    public boolean isEmpty() {
+        /*
+        Returns true if the queue is empty
+         */
+        return this.front == null;
+    }
+
 
     public static void main(String[] args) {
         /*

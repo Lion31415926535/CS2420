@@ -31,26 +31,26 @@ public class Flooding {
 
     void markFloodedR(GridLocation g) {
         try {
-            // First, check if current tile is below water
-            // If so, mark as flooded
+            // If current tile is below water height, mark it as flooded
             if (terrain[g.row][g.col] <= height) {
                 flooded[g.row][g.col] = true;
-            }
 
-            GridLocation[] neighbors = {
-                    new GridLocation(g.row + 1, g.col),
-                    new GridLocation(g.row - 1, g.col),
-                    new GridLocation(g.row, g.col + 1),
-                    new GridLocation(g.row, g.col - 1)};
-            // Next, for each neighbor, check if a neighbor is valid
-            // Then call markFloodedR for the neighbor
-            for (GridLocation n : neighbors) {
-                if (validNeighbor(n) && !flooded[n.row][n.col]) {
-                    if (terrain[n.row][n.col] <= height) {
+                // Create the four neighbors' grid locations
+                GridLocation[] neighbors = {
+                        new GridLocation(g.row + 1, g.col),
+                        new GridLocation(g.row - 1, g.col),
+                        new GridLocation(g.row, g.col + 1),
+                        new GridLocation(g.row, g.col - 1)};
+
+                // If neighbor is valid and isn't flooded, then call markFlooded
+                for (GridLocation n : neighbors) {
+                    if (validNeighbor(n) && !flooded[n.row][n.col]) {
                         markFloodedR(n);
                     }
                 }
             }
+
+
 
         } catch (StackOverflowError e) {
             System.err.println("Stack Overflow");
@@ -64,7 +64,37 @@ public class Flooding {
         flooded = new boolean[rows][cols];
         for (int i = 0; i < rows; i++)
             Arrays.fill(flooded[i], false);
-        //Write code to mark flooding
+        //Create Queue
+        Queue<GridLocation> locations = new Queue<>();
+
+        // Add water sources to queue
+        for (GridLocation g : sources) {
+            locations.add(g);
+            if (terrain[g.row][g.col] <= height) {
+                flooded[g.row][g.col] = true;
+            }
+        }
+
+        while (!locations.isEmpty()) {
+            // Retrieve a location from the queue
+            GridLocation g = locations.remove();
+
+            // Create neighbors of current location
+            GridLocation[] neighbors = {
+                    new GridLocation(g.row + 1, g.col),
+                    new GridLocation(g.row - 1, g.col),
+                    new GridLocation(g.row, g.col + 1),
+                    new GridLocation(g.row, g.col - 1)};
+
+            // For each neighbor, check if it is valid, not flooded, and below water height, then mark as flooded
+            for (GridLocation n : neighbors) {
+                if (validNeighbor(n) && !flooded[n.row][n.col] && terrain[n.row][n.col] <= height) {
+                    flooded[n.row][n.col] = true;
+                    locations.add(n);
+                }
+            }
+        }
+
         return flooded;
     }
 
