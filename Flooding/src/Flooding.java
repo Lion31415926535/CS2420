@@ -27,10 +27,10 @@ public class Flooding {
             Arrays.fill(flooded[i], false);
 
         // Creates and floods water sources
-        for (GridLocation g : sources) {
-            if (terrain[g.row][g.col] <= height) {
-                flooded[g.row][g.col] = true;
-                markFloodedR(g);
+        for (GridLocation source : sources) {
+            if (terrain[source.row][source.col] <= height) {
+                flooded[source.row][source.col] = true;
+                markFloodedR(source);
             }
 
 
@@ -79,10 +79,10 @@ public class Flooding {
         Queue<GridLocation> locations = new Queue<>();
 
         // Add water sources to queue
-        for (GridLocation g : sources) {
-            if (terrain[g.row][g.col] <= height) {
-                flooded[g.row][g.col] = true;
-                locations.add(g);
+        for (GridLocation source : sources) {
+            if (terrain[source.row][source.col] <= height) {
+                flooded[source.row][source.col] = true;
+                locations.add(source);
             }
         }
 
