@@ -37,6 +37,9 @@ public class Queue <E>{
         if (this.front != null) {
             E elem = this.front.data;
             this.front = this.front.next;
+            if (isEmpty()) {
+                this.back = null;
+            }
             return elem;
         }
         System.out.println("Queue is empty");
