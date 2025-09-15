@@ -77,6 +77,8 @@ public class Tree {
 
     /**
      * Returns a string of the tree displayed vertically
+     * Complexity is O(n)
+     *
      * @param n current node
      * @param level current level
      */
@@ -103,7 +105,7 @@ public class Tree {
 
     /**
      * Internal method to return a string of items in the tree in order
-     * This routine runs in O(??)
+     * This routine runs in O(n)
      *
      * @param t the node that roots the subtree.
      */
@@ -122,18 +124,31 @@ public class Tree {
      * @return
      */
     public Integer deepestNode() {
-        return -1;
+        return deepestNodeHelper(root, 0);
+    }
+
+    private Integer deepestNodeHelper(BinaryNode n, int level) {
+        return null;
+
     }
 
     /**
-     * The complexity of finding the flip is O(???)
+     * The complexity of finding the flip is O(n)
      * reverse left and right children recursively
      */
     public void flip() {
         flip(root);
     }
-    private void flip(BinaryNode t){
-
+    private void flip(BinaryNode n){
+        if (n == null) {
+            return;
+        }
+        BinaryNode rTemp = n.right;
+        BinaryNode lTemp = n.left;
+        n.right = lTemp;
+        n.left = rTemp;
+        flip(n.left);
+        flip(n.right);
     }
 
     /**
