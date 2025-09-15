@@ -124,11 +124,26 @@ public class Tree {
      * @return
      */
     public Integer deepestNode() {
-        return deepestNodeHelper(root, 0);
+        return deepestNodeHelper(root, 0)[0];
     }
 
-    private Integer deepestNodeHelper(BinaryNode n, int level) {
-        return null;
+    private Integer[] deepestNodeHelper(BinaryNode n, int level) {
+        if (n == null) {
+            return new Integer[]{0, 0};
+        }
+
+        if (n.left == null && n.right == null) {
+            return new Integer[]{n.element, level};
+        }
+
+
+        Integer[] deepLeft = deepestNodeHelper(n.left, level + 1);
+        Integer[] deepRight = deepestNodeHelper(n.right, level + 1);
+
+        if (deepRight[1].compareTo(deepLeft[1]) > 0) {
+            return deepRight;
+        }
+        return deepLeft;
 
     }
 
@@ -139,6 +154,11 @@ public class Tree {
     public void flip() {
         flip(root);
     }
+
+    /**
+     * Recursively flips children of each node in the tree
+     * @param n current node
+     */
     private void flip(BinaryNode n){
         if (n == null) {
             return;
