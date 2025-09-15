@@ -123,6 +123,7 @@ public class Tree {
      * The complexity of finding the deepest node is O(???)
      * @return
      */
+    //TODO: Clean up this method
     public Integer deepestNode() {
         return deepestNodeHelper(root, 0)[0];
     }
@@ -173,13 +174,32 @@ public class Tree {
 
     /**
      * Counts number of nodes in specified level
-     * The complexity of nodesInLevel is O(???)
+     * The complexity of nodesInLevel is O(n)
      * @param level Level in tree, root is zero
      * @return count of number of nodes at specified level
      */
     public int nodesInLevel(int level) {
-        System.out.println("nodesInLevel needs to return the nodes at " + level);
-        return 0;
+        return nodesInLevel(root, level, 0);
+    }
+
+    /**
+     * Recursively counts the nodes at the specified level
+     *
+     * @param n current node
+     * @param level level to count nodes at
+     * @param currentLevel
+     * @return sum of nodes at the level given
+     */
+    private int nodesInLevel(BinaryNode n, int level, int currentLevel) {
+        if (n == null) {
+            return 0;
+        }
+        if (currentLevel == level) {
+            return 1;
+        }
+        int sum = nodesInLevel(n.left, level, currentLevel + 1);
+        sum += nodesInLevel(n.right, level, currentLevel + 1);
+        return sum;
     }
 
     /**
