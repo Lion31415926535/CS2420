@@ -72,8 +72,25 @@ public class Tree {
         if (root == null)
             return treeName + " Empty tree";
         else
-            return treeName + " Please write the code to print me";
+            return treeName + "\n" + toStringHelper(root, 1);
     }
+
+    /**
+     * Returns a string of the tree displayed vertically
+     * @param n current node
+     * @param level current level
+     */
+    private String toStringHelper(BinaryNode n, int level) {
+        if (n == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(toStringHelper(n.right, level + 1));
+        sb.append(String.format("%" + level + "s\n", n.element.toString()));
+        sb.append(toStringHelper(n.left, level + 1));
+        return sb.toString();
+    }
+
     /**
      * Return a string displaying the tree contents as a single line
      */
