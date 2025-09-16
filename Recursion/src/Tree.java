@@ -1,6 +1,8 @@
 // ******************ERRORS********************************
 // Throws UnderflowException as appropriate
 
+import java.util.ArrayList;
+
 class UnderflowException extends RuntimeException {
     /**
      * Construct this exception object.
@@ -204,10 +206,26 @@ public class Tree {
 
     /**
      * Print all paths from root to leaves
-     * The complexity of printAllPaths is O(???)
+     * The complexity of printAllPaths is O(n)
      */
     public void printAllPaths() {
-        System.out.println("printAllPaths does nothing");
+        printAllPaths(root, "");
+    }
+
+    private void printAllPaths(BinaryNode n, String path) {
+        if (n == null) {
+            return;
+        }
+        path += n.element + " ";
+
+        if (n.left == null && n.right == null) {
+            System.out.println(path);
+            return;
+        }
+
+        printAllPaths(n.left, path);
+        printAllPaths(n.right, path);
+
     }
 
 
