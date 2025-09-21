@@ -302,9 +302,29 @@ public class Tree {
     }
     /**
      * Remove all paths from tree that sum to less than given value
-     * @param sum: minimum path sum allowed in final tree
+     * @param k: minimum path sum allowed in final tree
      */
-    public void pruneK(Integer sum) {
+    public void pruneK(Integer k) {
+        pruneK(root, k, 0);
+    }
+
+    private int pruneK(BinaryNode n, Integer k, int sum) {
+        if (n == null) {
+            return 0;
+        }
+
+        sum += n.element;
+        if (n.left == null && n.right == null) {
+            return sum;
+        }
+
+        if (pruneK(n.left, k, sum) < k) {
+            n.left = null;
+        }
+        if (pruneK(n.right, k, sum) < k) {
+            n.right = null;
+        }
+        return sum;
     }
 
     /**
