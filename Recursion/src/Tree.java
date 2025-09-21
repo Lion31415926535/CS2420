@@ -338,13 +338,31 @@ public class Tree {
 
     /**
      * Find the least common ancestor of two nodes
+     * Complexity is O(log n)
      * @param a first node
      * @param b second node
      * @return String representation of ancestor
      */
-    public BinaryNode lca(BinaryNode  t,Integer a, Integer b) {
-        return t;
+    public Integer lca(Integer a, Integer b) {
+        Integer min = Math.min(a,b);
+        Integer max = Math.max(a,b);
+        if (contains(min) && contains(max)) {
+            BinaryNode  l  = lca(root,min,max);
+            return l.element;
+        }
+        return null;
 
+    }
+
+    private BinaryNode lca(BinaryNode  n,Integer min, Integer  max) {
+        if (n.element < min) {
+            return lca(n.right, min, max);
+        }
+        if (n.element > max) {
+            return lca(n.left, min, max);
+        }
+
+        return n;
     }
     public Integer sumAll(){
         BinaryNode  r =   root;
@@ -355,13 +373,6 @@ public class Tree {
         return t.element + sumAll(t.left) + sumAll(t.right);
     }
 
-    public Integer lca(Integer a, Integer b) {
-
-         BinaryNode  l  = lca(root,a,b);
-         if (l==null) return null;
-         return l.element;
-
-    }
     /**
      * Balance the tree
      */
