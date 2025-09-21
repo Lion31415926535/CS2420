@@ -377,7 +377,28 @@ public class Tree {
      * Balance the tree
      */
     public void balanceTree() {
-        //root = balanceTree(root);
+        ArrayList<Integer> inOrderArrayList = new ArrayList<>();
+        getInOrderArray(inOrderArrayList, root);
+        Integer[] inOrderArray = new Integer[inOrderArrayList.size()];
+        for (int i = 0; i < inOrderArrayList.size(); i++) {
+            inOrderArray[i] = inOrderArrayList.get(i);
+        }
+
+        root = buildUnordered(inOrderArray, 0, inOrderArray.length - 1);
+    }
+
+    /**
+     * Returns an array with the elements of a tree in order
+     */
+    private ArrayList<Integer> getInOrderArray(ArrayList<Integer> arr, BinaryNode n) {
+        if (n == null) {
+            return null;
+        }
+        getInOrderArray(arr, n.left);
+        arr.add(n.element);
+        getInOrderArray(arr, n.right);
+        return arr;
+
     }
 
     /**
