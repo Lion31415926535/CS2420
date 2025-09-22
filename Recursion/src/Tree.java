@@ -408,6 +408,26 @@ public class Tree {
      * @param b highest value
      */
     public void keepRange(Integer a, Integer b) {
+        root = keepRange(root, a, b);
+    }
+
+    private BinaryNode keepRange(BinaryNode n, Integer low, Integer high) {
+        if (n == null) {
+            return null;
+        }
+
+        if (n.element >= low && n.element <= high) {
+            n.left = keepRange(n.left, low, high);
+            n.right = keepRange(n.right, low, high);
+            return n;
+        }
+        if (n.element < low) {
+            return keepRange(n.right, low, high);
+        }
+        if (n.element > high) {
+            return  keepRange(n.left, low, high);
+        }
+        return n;
     }
 
     // Basic node stored in unbalanced binary  trees
