@@ -127,6 +127,9 @@ public class Tree {
      */
     //TODO: Clean up this method
     public Integer deepestNode() {
+        if (root == null) {
+            return null;
+        }
         return deepestNodeHelper(root, 0)[0];
     }
 
@@ -235,8 +238,25 @@ public class Tree {
      * @return Count of embedded binary search trees
      */
     public Integer countBST() {
-        if (root == null) return 0;
-        return -1;
+        if (root == null) {
+            return 0;
+        }
+        return countBST(root)[0];
+    }
+
+    private Integer[] countBST(BinaryNode n) {
+        if (n == null) {
+            return new Integer[]{0, 1};
+        }
+
+        Integer[] leftBST = countBST(n.left);
+        Integer[] rightBST = countBST(n.right);
+
+        if (leftBST[1] == 1 && rightBST[1] == 1) {
+            return new Integer[]{1 + leftBST[0] + rightBST[0], 1};
+        }
+
+        return new Integer[]{leftBST[0] + rightBST[0], 0};
     }
 
     /**
