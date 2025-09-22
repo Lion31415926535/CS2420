@@ -325,6 +325,9 @@ public class Tree {
      * @param k: minimum path sum allowed in final tree
      */
     public void pruneK(Integer k) {
+        if (pruneK(root, k, 0) < k){
+            root = null;
+        }
         pruneK(root, k, 0);
     }
 
@@ -338,13 +341,16 @@ public class Tree {
             return sum;
         }
 
-        if (pruneK(n.left, k, sum) < k) {
+        int sumLeft = pruneK(n.left, k, sum);
+        int sumRight = pruneK(n.right, k, sum);
+
+        if (sumLeft < k) {
             n.left = null;
         }
-        if (pruneK(n.right, k, sum) < k) {
+        if (sumRight < k) {
             n.right = null;
         }
-        return sum;
+        return Math.max(sumLeft, sumRight);
     }
 
     /**
