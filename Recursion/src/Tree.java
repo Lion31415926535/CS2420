@@ -364,14 +364,15 @@ public class Tree {
     }
     /**
      * Remove all paths from tree that sum to less than given value
+     * If the maximum sum is less than k, then set the root to null
      * Complexity for pruneK is O(n)
      * @param k: minimum path sum allowed in final tree
      */
     public void pruneK(Integer k) {
-        if (pruneK(root, k, 0) < k){
+        int maxSum = pruneK(root, k, 0);
+        if (maxSum < k) {
             root = null;
         }
-        pruneK(root, k, 0);
     }
 
     /**
@@ -514,6 +515,7 @@ public class Tree {
 
     /**
      * Balances the tree
+     * Complexity O(n)
      * Creates an array list then array of the in order traversal of the tree
      * Then rebuilds the tree from that order
      */
