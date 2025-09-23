@@ -74,24 +74,24 @@ public class Tree {
         if (root == null)
             return treeName + " Empty tree";
         else
-            return treeName + "\n" + toStringHelper(root, 1);
+            return treeName + "\n" + toString(root, 1);
     }
 
     /**
-     * Returns a string of the tree displayed vertically
+     * Returns a string of the tree displayed vertically with spacing determined by level
      * Complexity is O(n)
      *
      * @param n current node
      * @param level current level
      */
-    private String toStringHelper(BinaryNode n, int level) {
+    private String toString(BinaryNode n, int level) {
         if (n == null) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(toStringHelper(n.right, level + 1));
+        sb.append(toString(n.right, level + 1));
         sb.append(String.format("%" + level + "s\n", n.element.toString()));
-        sb.append(toStringHelper(n.left, level + 1));
+        sb.append(toString(n.left, level + 1));
         return sb.toString();
     }
 
@@ -122,18 +122,24 @@ public class Tree {
 
 
     /**
-     * The complexity of finding the deepest node is O(???)
-     * @return
+     * Find the deepest ndoe and returns its value
+     * The complexity of finding the deepest node is O(n)
+     * @return The value (Integer) of the deepest node
      */
-    //TODO: Clean up this method
     public Integer deepestNode() {
         if (root == null) {
             return null;
         }
-        return deepestNodeHelper(root, 0)[0];
+        return deepestNode(root, 0)[0];
     }
 
-    private Integer[] deepestNodeHelper(BinaryNode n, int level) {
+    /**
+     * Recursively finds the deepest node in a BST
+     * @param n Current node
+     * @param level Current level
+     * @return An array with the value of the deepest node and its level
+     */
+    private Integer[] deepestNode(BinaryNode n, int level) {
         if (n == null) {
             return new Integer[]{0, 0};
         }
@@ -143,8 +149,8 @@ public class Tree {
         }
 
 
-        Integer[] deepLeft = deepestNodeHelper(n.left, level + 1);
-        Integer[] deepRight = deepestNodeHelper(n.right, level + 1);
+        Integer[] deepLeft = deepestNode(n.left, level + 1);
+        Integer[] deepRight = deepestNode(n.right, level + 1);
 
         if (deepRight[1].compareTo(deepLeft[1]) > 0) {
             return deepRight;
@@ -215,6 +221,11 @@ public class Tree {
         printAllPaths(root, "");
     }
 
+    /**
+     * Recursively prints the paths to each leaf node
+     * @param n Current Node
+     * @param path Accumulated path to current node
+     */
     private void printAllPaths(BinaryNode n, String path) {
         if (n == null) {
             return;
@@ -234,7 +245,7 @@ public class Tree {
 
     /**
      * Counts all non-null binary search trees embedded in tree
-     *  The complexity of countBST is O(???)
+     *  The complexity of countBST is O(n)
      * @return Count of embedded binary search trees
      */
     public Integer countBST() {
@@ -244,6 +255,11 @@ public class Tree {
         return countBST(root)[0];
     }
 
+    /**
+     * Recursively counts all sub-BST's within a BST
+     * @param n Current node
+     * @return An array with the count of subtrees and if the current tree is a BST
+     */
     private Integer[] countBST(BinaryNode n) {
         if (n == null) {
             return new Integer[]{0, 1};
@@ -322,6 +338,7 @@ public class Tree {
     }
     /**
      * Remove all paths from tree that sum to less than given value
+     * Complexity for pruneK is O(n)
      * @param k: minimum path sum allowed in final tree
      */
     public void pruneK(Integer k) {
@@ -331,6 +348,13 @@ public class Tree {
         pruneK(root, k, 0);
     }
 
+    /**
+     * Recursively sums paths to each leaf node, removing paths that don't sum up to k
+     * @param n Current node
+     * @param k Minimum value to not prune a branch
+     * @param sum Sum from root to current node
+     * @return
+     */
     private int pruneK(BinaryNode n, Integer k, int sum) {
         if (n == null) {
             return 0;
@@ -380,12 +404,19 @@ public class Tree {
 
     }
 
-    private BinaryNode lca(BinaryNode  n,Integer min, Integer  max) {
-        if (n.element < min) {
-            return lca(n.right, min, max);
+    /**
+     * Recursively finds the node that is ancestor to the given nodes
+     * @param n Current node
+     * @param low Lower number node to find
+     * @param high Higher number node to find
+     * @return The node that is the least common ancestor
+     */
+    private BinaryNode lca(BinaryNode  n,Integer low, Integer  high) {
+        if (n.element < low) {
+            return lca(n.right, low, high);
         }
-        if (n.element > max) {
-            return lca(n.left, min, max);
+        if (n.element > high) {
+            return lca(n.left, low, high);
         }
 
         return n;
@@ -400,9 +431,13 @@ public class Tree {
     }
 
     /**
-     * Balance the tree
+     * Balances the tree
+     * Creates an array list then array of the in order traversal of the tree
+     * Then rebuilds the tree from that order
      */
     public void balanceTree() {
+
+        // Creates an in order array list then converts it into an array
         ArrayList<Integer> inOrderArrayList = new ArrayList<>();
         getInOrderArray(inOrderArrayList, root);
         Integer[] inOrderArray = new Integer[inOrderArrayList.size()];
@@ -410,11 +445,15 @@ public class Tree {
             inOrderArray[i] = inOrderArrayList.get(i);
         }
 
+        // Rebuilds the tree in a balanced order
         root = buildUnordered(inOrderArray, 0, inOrderArray.length - 1);
     }
 
     /**
-     * Returns an array with the elements of a tree in order
+     * Recursively creates array list with the elements of a tree in order
+     * @param arr Original array
+     * @param n Current Node
+     * @return An array list from an inorder traversal of the tree
      */
     private ArrayList<Integer> getInOrderArray(ArrayList<Integer> arr, BinaryNode n) {
         if (n == null) {
@@ -429,6 +468,7 @@ public class Tree {
 
     /**
      * In a BST, keep only nodes between range
+     * Complexity is O(n)
      *
      * @param a lowest value
      * @param b highest value
@@ -437,6 +477,13 @@ public class Tree {
         root = keepRange(root, a, b);
     }
 
+    /**
+     * Recursively finds the nodes within the range, keeping those and deleting nodes outside the range
+     * @param n Current Node
+     * @param low Lower bound of range to keep
+     * @param high Upper bound of range
+     * @return A node after necessary branches have been removed
+     */
     private BinaryNode keepRange(BinaryNode n, Integer low, Integer high) {
         if (n == null) {
             return null;
