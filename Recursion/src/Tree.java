@@ -405,11 +405,67 @@ public class Tree {
 
     /**
      * Build tree given inOrder and preOrder traversals.  Each value is unique
+     * Complexity is O(n^2)
      * @param inOrder  List of tree nodes in inorder
      * @param preOrder List of tree nodes in preorder
      */
     public void buildTreeFromTraversals(Integer[] inOrder, Integer[] preOrder) {
-        root = null;
+        root = buildTreeFromTraversals(inOrder, preOrder, 0, inOrder.length - 1);
+    }
+
+    /**
+     * Recursively creates the left and right branches of the tree and all subtrees
+     * Finds the current preorder value in the inOrder list then uses all values left of that for the left subtree and values right of it for the right subtree
+     * @param inOrder List of tree nodes in inorder
+     * @param preOrder List of tree nodes in preorder
+     * @param start The starting index for the inOrder list
+     * @param end The ending index for the inOrder list
+     * @return The newest node in the tree
+     */
+    public BinaryNode buildTreeFromTraversals(Integer[] inOrder, Integer[] preOrder, int start, int end) {
+        if (start > end) {
+            return null;
+        }
+
+        int preIndex = findPreIndex(preOrder);
+        BinaryNode me = new BinaryNode(preOrder[preIndex]);
+        preOrder[preIndex] = null; // Sets used preOrder node to null so we can move to the next preOrder node
+
+        int inIndex = findInIndex(inOrder, me.element);
+
+        me.left = buildTreeFromTraversals(inOrder, preOrder, start, inIndex - 1);
+        me.right = buildTreeFromTraversals(inOrder, preOrder, inIndex + 1, end);
+
+        return me;
+    }
+
+    /**
+     * Finds the index of the next preorder node
+     * @param preOrder List of preorder nodes
+     * @return The index of the next preorder node needed
+     */
+    private int findPreIndex(Integer[] preOrder) {
+        for (int i = 0; i < preOrder.length; i++) {
+            if (preOrder[i] != null) {
+                return i;
+            }
+        }
+        return -1; // Never will reach this with valid input
+    }
+
+    /**
+     *
+     * @param inOrder List of inorder nodes
+     * @param target The value of the preorder node that we want to find in the inorder list
+     * @return The index of the node with value matching the target value
+     */
+    private int findInIndex(Integer[] inOrder, Integer target) {
+        for (int i = 0; i < inOrder.length; i++) {
+            if (inOrder[i].equals(target)) {
+                return i;
+            }
+        }
+        return -1; // Never will reach this with valid input
     }
 
     /**
