@@ -122,7 +122,7 @@ public class Tree {
 
 
     /**
-     * Find the deepest ndoe and returns its value
+     * Find the deepest node and returns its value
      * The complexity of finding the deepest node is O(n)
      * @return The value (Integer) of the deepest node
      */
@@ -130,33 +130,46 @@ public class Tree {
         if (root == null) {
             return null;
         }
-        return deepestNode(root, 0)[0];
+        return deepestNode(root, 0).element;
     }
 
     /**
      * Recursively finds the deepest node in a BST
      * @param n Current node
      * @param level Current level
-     * @return An array with the value of the deepest node and its level
+     * @return An object with the deepest node's element and level
      */
-    private Integer[] deepestNode(BinaryNode n, int level) {
+    private DeepNode deepestNode(BinaryNode n, int level) {
         if (n == null) {
-            return new Integer[]{0, 0};
+            return new DeepNode(0,0);
         }
 
         if (n.left == null && n.right == null) {
-            return new Integer[]{n.element, level};
+            return new DeepNode(n.element, level);
         }
 
 
-        Integer[] deepLeft = deepestNode(n.left, level + 1);
-        Integer[] deepRight = deepestNode(n.right, level + 1);
+        DeepNode deepLeft = deepestNode(n.left, level + 1);
+        DeepNode deepRight = deepestNode(n.right, level + 1);
 
-        if (deepRight[1].compareTo(deepLeft[1]) > 0) {
+        if (deepRight.level > deepLeft.level) {
             return deepRight;
         }
         return deepLeft;
 
+    }
+
+    /**
+     * Class to keep track of the deepest node's level and element
+     */
+    private class DeepNode {
+        Integer element;
+        int level;
+
+        public DeepNode(Integer element, int level) {
+            this.element = element;
+            this.level = level;
+        }
     }
 
     /**
@@ -252,27 +265,40 @@ public class Tree {
         if (root == null) {
             return 0;
         }
-        return countBST(root)[0];
+        return countBST(root).sum;
     }
 
     /**
      * Recursively counts all sub-BST's within a BST
      * @param n Current node
-     * @return An array with the count of subtrees and if the current tree is a BST
+     * @return An object with the count of subtrees and if the current tree is a BST
      */
-    private Integer[] countBST(BinaryNode n) {
+    private BSTCounter countBST(BinaryNode n) {
         if (n == null) {
-            return new Integer[]{0, 1};
+            return new BSTCounter(0, true);
         }
 
-        Integer[] leftBST = countBST(n.left);
-        Integer[] rightBST = countBST(n.right);
+        BSTCounter leftBST = countBST(n.left);
+        BSTCounter rightBST = countBST(n.right);
 
-        if (leftBST[1] == 1 && rightBST[1] == 1) {
-            return new Integer[]{1 + leftBST[0] + rightBST[0], 1};
+        if (leftBST.isBST && rightBST.isBST) {
+            return new BSTCounter(1 + leftBST.sum + rightBST.sum, true);
         }
 
-        return new Integer[]{leftBST[0] + rightBST[0], 0};
+        return new BSTCounter(leftBST.sum + rightBST.sum, false);
+    }
+
+    /**
+     * Class that counts sum of sub-BSTs and if the current tree is also a BST
+     */
+    private class BSTCounter {
+        int sum;
+        boolean isBST;
+
+        public BSTCounter (int sum, boolean isBST) {
+            this.sum = sum;
+            this.isBST = isBST;
+        }
     }
 
     /**
