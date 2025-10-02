@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Flooding {
@@ -116,13 +117,63 @@ public class Flooding {
         return (row >= 0 && col >= 0 && row < rows && col < cols);
     }
 
-
+    /**
+     * Finds at what water height each grid location will flood using an exhaustive approach
+     * @return A grid of ints with when that grid location will flood
+     */
     public int[][] whenFloodExhaustive() {
-        return null;
+        int insertCt=0;
+        int[][] whenFlood = new int[rows][cols];
+        // Write code to build the whenFlood matrix
+        for (int i=0; i < rows; i++) {
+            for (int j=0; j < cols; j++) {
+                whenFlood[i][j] = 10000;
+            }
+        }
+
+        Queue<GridLocation> toDo = new Queue<>();
+
+        for (GridLocation source : sources) {
+            // Updates when flood at the source
+            whenFlood[source.row][source.col] = terrain[source.row][source.col];
+            toDo.add(source);
+            while (!toDo.isEmpty()) {
+                // Removes location from queue
+                GridLocation prev = toDo.remove();
+
+                // Creates an array of all neighbors
+                GridLocation[] neighbors = {
+                        new GridLocation(prev.row + 1, prev.col),
+                        new GridLocation(prev.row - 1, prev.col),
+                        new GridLocation(prev.row, prev.col + 1),
+                        new GridLocation(prev.row, prev.col - 1)};
+
+                for (GridLocation neigbor : neighbors) {
+                    // if neighbor is valid and whenFlood at the neighbor is greater than previous
+                    if (validNeighbor(neigbor) && whenFlood[neigbor.row][neigbor.col] > whenFlood[prev.row][prev.col]) {
+                        // Add neighbor to the queue and update when flood at its location
+                        toDo.add(neigbor);
+                        whenFlood[neigbor.row][neigbor.col] = Math.max(terrain[neigbor.row][neigbor.col],
+                                Math.min( whenFlood[neigbor.row][neigbor.col], whenFlood[prev.row][prev.col]));
+                    }
+                }
+            }
+        }
+
+        System.out.println("Exhaustive Nodes " + String.format("%,5d",insertCt));
+        return whenFlood;
     }
 
+
+    /**
+     * Finds at what water height each grid location will flood using a priority approach
+     * @return A grid of ints with when that grid location will flood
+     */
     public int[][] whenFlood() {
-        return null;
+        int insertCt=0;
+        int[][] whenFlood = new int[rows][cols];
+        System.out.println("PQ Nodes " +String.format("%,5d",insertCt));
+        return whenFlood;
     }
 
 
