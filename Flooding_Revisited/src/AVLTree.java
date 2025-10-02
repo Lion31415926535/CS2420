@@ -31,6 +31,7 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
     }
 
     /**
+     * Inserts the given element
      * @param x the item to insert.
      */
     public void insert( AnyType x )
@@ -224,9 +225,21 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
         return t;
     }
 
+    /**
+     * Finds and deletes the minimum node (the left-most node)
+     * @param t The current node
+     * @return The node after deleting
+     */
     private AvlNode<AnyType> deleteMin( AvlNode<AnyType> t )
     {
-       return t;
+        if (t == null) {
+            return null;
+        }
+        if (t.left == null) {
+            return t.right;
+        }
+        t.left = deleteMin(t.left);
+        return balance(t);
     }
 
     /**
