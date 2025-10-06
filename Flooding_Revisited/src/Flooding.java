@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Flooding {
@@ -124,10 +123,9 @@ public class Flooding {
     public int[][] whenFloodExhaustive() {
         int insertCt=0;
         int[][] whenFlood = new int[rows][cols];
-        // Write code to build the whenFlood matrix
         for (int i=0; i < rows; i++) {
             for (int j=0; j < cols; j++) {
-                whenFlood[i][j] = 10000;
+                whenFlood[i][j] = Integer.MAX_VALUE;
             }
         }
 
@@ -148,13 +146,14 @@ public class Flooding {
                         new GridLocation(prev.row, prev.col + 1),
                         new GridLocation(prev.row, prev.col - 1)};
 
-                for (GridLocation neigbor : neighbors) {
+                for (GridLocation neighbor : neighbors) {
                     // if neighbor is valid and whenFlood at the neighbor is greater than previous
-                    if (validNeighbor(neigbor) && whenFlood[neigbor.row][neigbor.col] > whenFlood[prev.row][prev.col]) {
+                    if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
                         // Add neighbor to the queue and update when flood at its location
-                        toDo.add(neigbor);
-                        whenFlood[neigbor.row][neigbor.col] = Math.max(terrain[neigbor.row][neigbor.col],
-                                Math.min( whenFlood[neigbor.row][neigbor.col], whenFlood[prev.row][prev.col]));
+                        insertCt++;
+                        toDo.add(neighbor);
+                        whenFlood[neighbor.row][neighbor.col] = Math.max(terrain[neighbor.row][neighbor.col],
+                                Math.min( whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
                     }
                 }
             }
@@ -172,6 +171,48 @@ public class Flooding {
     public int[][] whenFlood() {
         int insertCt=0;
         int[][] whenFlood = new int[rows][cols];
+        for (int i=0; i < rows; i++) {
+            for (int j=0; j < cols; j++) {
+                whenFlood[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        AVLTree<GridLocation> toDo = new AVLTree<>();
+
+        for (GridLocation source : sources) {
+            // Updates when flood at the source
+            whenFlood[source.row][source.col] = terrain[source.row][source.col];
+            source.whenFlood = terrain[source.row][source.col];
+            toDo.insert(source);
+        }
+
+        while (!toDo.isEmpty()) {
+            // Removes location from the AVL Tree
+            GridLocation prev = toDo.findMin();
+            toDo.deleteMin();
+
+            // Creates an array of all neighbors
+            GridLocation[] neighbors = {
+                    new GridLocation(prev.row + 1, prev.col),
+                    new GridLocation(prev.row - 1, prev.col),
+                    new GridLocation(prev.row, prev.col + 1),
+                    new GridLocation(prev.row, prev.col - 1)};
+
+            for (GridLocation neighbor : neighbors) {
+                // if neighbor is valid and whenFlood at the neighbor is greater than previous
+                if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
+                    // Add neighbor to the AVL Tree and update whenFlood at its location
+                    insertCt++;
+
+                    int whenFloodValue = Math.max(terrain[neighbor.row][neighbor.col],
+                            Math.min( whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
+                    whenFlood[neighbor.row][neighbor.col] = whenFloodValue;
+                    neighbor.whenFlood = whenFloodValue;
+                    toDo.insert(neighbor);
+                }
+            }
+        }
+
         System.out.println("PQ Nodes " +String.format("%,5d",insertCt));
         return whenFlood;
     }
