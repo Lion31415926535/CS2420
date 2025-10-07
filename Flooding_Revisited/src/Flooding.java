@@ -148,12 +148,22 @@ public class Flooding {
 
                 for (GridLocation neighbor : neighbors) {
                     // if neighbor is valid and whenFlood at the neighbor is greater than previous
-                    if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
-                        // Add neighbor to the queue and update when flood at its location
-                        insertCt++;
-                        toDo.add(neighbor);
-                        whenFlood[neighbor.row][neighbor.col] = Math.max(terrain[neighbor.row][neighbor.col],
-                                Math.min( whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
+//                    if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
+//                        // Add neighbor to the queue and update when flood at its location
+//                        insertCt++;
+//                        toDo.add(neighbor);
+//                        whenFlood[neighbor.row][neighbor.col] = Math.max(terrain[neighbor.row][neighbor.col],
+//                                Math.min( whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
+//                    }
+                    if (validNeighbor(neighbor)) {
+                        int newFlood = Math.max(terrain[neighbor.row][neighbor.col], Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
+
+                        if (newFlood < whenFlood[neighbor.row][neighbor.col]) {
+                            whenFlood[neighbor.row][neighbor.col] = newFlood;
+                            neighbor.whenFlood = newFlood;
+                            toDo.add(neighbor);
+                            insertCt++;
+                        }
                     }
                 }
             }
@@ -200,15 +210,27 @@ public class Flooding {
 
             for (GridLocation neighbor : neighbors) {
                 // if neighbor is valid and whenFlood at the neighbor is greater than previous
-                if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
-                    // Add neighbor to the AVL Tree and update whenFlood at its location
-                    insertCt++;
+//                if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
+//                    // Add neighbor to the AVL Tree and update whenFlood at its location
+//                    insertCt++;
+//
+//                    int whenFloodValue = Math.max(terrain[neighbor.row][neighbor.col],
+//                            Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
+//                    whenFlood[neighbor.row][neighbor.col] = whenFloodValue;
+//                    neighbor.whenFlood = whenFloodValue;
+//                    toDo.insert(neighbor);
+//                }
+                // If valid neighbor then calculate what the new flood level is
+                if (validNeighbor(neighbor)) {
+                    int newFlood = Math.max(terrain[neighbor.row][neighbor.col], Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
 
-                    int whenFloodValue = Math.max(terrain[neighbor.row][neighbor.col],
-                            Math.min( whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
-                    whenFlood[neighbor.row][neighbor.col] = whenFloodValue;
-                    neighbor.whenFlood = whenFloodValue;
-                    toDo.insert(neighbor);
+                    // If the new flood level is less than the current flood level, then update it and add to the AVL tree
+                    if (newFlood < whenFlood[neighbor.row][neighbor.col]) {
+                        whenFlood[neighbor.row][neighbor.col] = newFlood;
+                        neighbor.whenFlood = newFlood;
+                        toDo.insert(neighbor);
+                        insertCt++;
+                    }
                 }
             }
         }
