@@ -129,45 +129,40 @@ public class Flooding {
             }
         }
 
-        Queue<GridLocation> toDo = new Queue<>();
+        Queue<GridLocation> toDoList = new Queue<>();
 
         for (GridLocation source : sources) {
-            // Updates when flood at the source
+            // Updates whenFlood at the sources and adds them to the queue
             whenFlood[source.row][source.col] = terrain[source.row][source.col];
-            toDo.add(source);
-            while (!toDo.isEmpty()) {
-                // Removes location from queue
-                GridLocation prev = toDo.remove();
+            toDoList.add(source);
+        }
+        while (!toDoList.isEmpty()) {
+            // Removes location from queue
+            GridLocation prev = toDoList.remove();
 
-                // Creates an array of all neighbors
-                GridLocation[] neighbors = {
-                        new GridLocation(prev.row + 1, prev.col),
-                        new GridLocation(prev.row - 1, prev.col),
-                        new GridLocation(prev.row, prev.col + 1),
-                        new GridLocation(prev.row, prev.col - 1)};
+            // Creates an array of all neighbors
+            GridLocation[] neighbors = {
+                    new GridLocation(prev.row + 1, prev.col),
+                    new GridLocation(prev.row - 1, prev.col),
+                    new GridLocation(prev.row, prev.col + 1),
+                    new GridLocation(prev.row, prev.col - 1)};
 
-                for (GridLocation neighbor : neighbors) {
-                    // if neighbor is valid and whenFlood at the neighbor is greater than previous
-//                    if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
-//                        // Add neighbor to the queue and update when flood at its location
-//                        insertCt++;
-//                        toDo.add(neighbor);
-//                        whenFlood[neighbor.row][neighbor.col] = Math.max(terrain[neighbor.row][neighbor.col],
-//                                Math.min( whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
-//                    }
-                    if (validNeighbor(neighbor)) {
-                        int newFlood = Math.max(terrain[neighbor.row][neighbor.col], Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
+            for (GridLocation neighbor : neighbors) {
+                // If neighbor is valid, then calculate its whenFlood value
+                if (validNeighbor(neighbor)) {
+                    int newFlood = Math.max(terrain[neighbor.row][neighbor.col], Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
 
-                        if (newFlood < whenFlood[neighbor.row][neighbor.col]) {
-                            whenFlood[neighbor.row][neighbor.col] = newFlood;
-                            neighbor.whenFlood = newFlood;
-                            toDo.add(neighbor);
-                            insertCt++;
-                        }
+                    // if the new whenFlood value is less than its current one, then update the array and add neighbor to the queue
+                    if (newFlood < whenFlood[neighbor.row][neighbor.col]) {
+                        whenFlood[neighbor.row][neighbor.col] = newFlood;
+                        neighbor.whenFlood = newFlood;
+                        toDoList.add(neighbor);
+                        insertCt++;
                     }
                 }
             }
         }
+
 
         System.out.println("Exhaustive Nodes " + String.format("%,5d",insertCt));
         return whenFlood;
@@ -187,19 +182,19 @@ public class Flooding {
             }
         }
 
-        AVLTree<GridLocation> toDo = new AVLTree<>();
+        AVLTree<GridLocation> toDoList = new AVLTree<>();
 
         for (GridLocation source : sources) {
             // Updates when flood at the source
             whenFlood[source.row][source.col] = terrain[source.row][source.col];
             source.whenFlood = terrain[source.row][source.col];
-            toDo.insert(source);
+            toDoList.insert(source);
         }
 
-        while (!toDo.isEmpty()) {
+        while (!toDoList.isEmpty()) {
             // Removes location from the AVL Tree
-            GridLocation prev = toDo.findMin();
-            toDo.deleteMin();
+            GridLocation prev = toDoList.findMin();
+            toDoList.deleteMin();
 
             // Creates an array of all neighbors
             GridLocation[] neighbors = {
@@ -209,18 +204,7 @@ public class Flooding {
                     new GridLocation(prev.row, prev.col - 1)};
 
             for (GridLocation neighbor : neighbors) {
-                // if neighbor is valid and whenFlood at the neighbor is greater than previous
-//                if (validNeighbor(neighbor) && whenFlood[neighbor.row][neighbor.col] > whenFlood[prev.row][prev.col]) {
-//                    // Add neighbor to the AVL Tree and update whenFlood at its location
-//                    insertCt++;
-//
-//                    int whenFloodValue = Math.max(terrain[neighbor.row][neighbor.col],
-//                            Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
-//                    whenFlood[neighbor.row][neighbor.col] = whenFloodValue;
-//                    neighbor.whenFlood = whenFloodValue;
-//                    toDo.insert(neighbor);
-//                }
-                // If valid neighbor then calculate what the new flood level is
+                // If valid neighbor then calculate its whenFlood value
                 if (validNeighbor(neighbor)) {
                     int newFlood = Math.max(terrain[neighbor.row][neighbor.col], Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
 
@@ -228,7 +212,7 @@ public class Flooding {
                     if (newFlood < whenFlood[neighbor.row][neighbor.col]) {
                         whenFlood[neighbor.row][neighbor.col] = newFlood;
                         neighbor.whenFlood = newFlood;
-                        toDo.insert(neighbor);
+                        toDoList.insert(neighbor);
                         insertCt++;
                     }
                 }

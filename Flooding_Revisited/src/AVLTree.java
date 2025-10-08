@@ -32,48 +32,48 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
 
     /**
      * Inserts the given element
-     * @param x the item to insert.
+     * @param element the item to insert.
      */
-    public void insert( AnyType x )
+    public void insert( AnyType element )
     {
-        root = insert( x, root );
+        root = insert( element, root );
     }
 
     /**
      * Remove from the tree. Nothing is done if x is not found.
-     * @param x the item to remove.
+     * @param element the item to remove.
      */
-    public void remove( AnyType x )
+    public void remove( AnyType element )
     {
-        root = remove( x, root );
+        root = remove( element, root );
     }
 
 
     /**
      * Internal method to remove from a subtree.
-     * @param x the item to remove.
-     * @param t the node that roots the subtree.
+     * @param element the item to remove.
+     * @param currentNode the node that roots the subtree.
      * @return the new root of the subtree.
      */
-    private AvlNode<AnyType> remove( AnyType x, AvlNode<AnyType> t )
+    private AvlNode<AnyType> remove(AnyType element, AvlNode<AnyType> currentNode )
     {
-        if( t == null )
-            return t;   // Item not found; do nothing
+        if( currentNode == null )
+            return currentNode;   // Item not found; do nothing
 
-        int compareResult = x.compareTo( t.element );
+        int compareResult = element.compareTo( currentNode.element );
 
         if( compareResult < 0 )
-            t.left = remove( x, t.left );
+            currentNode.left = remove(element, currentNode.left );
         else if( compareResult > 0 )
-            t.right = remove( x, t.right );
-        else if( t.left != null && t.right != null ) // Two children
+            currentNode.right = remove(element, currentNode.right );
+        else if( currentNode.left != null && currentNode.right != null ) // Two children
         {
-            t.element = findMin( t.right ).element;
-            t.right = remove( t.element, t.right );
+            currentNode.element = findMin( currentNode.right ).element;
+            currentNode.right = remove( currentNode.element, currentNode.right );
         }
         else
-            t = ( t.left != null ) ? t.left : t.right;
-        return balance( t );
+            currentNode = ( currentNode.left != null ) ? currentNode.left : currentNode.right;
+        return balance( currentNode );
     }
 
     /**
@@ -87,6 +87,9 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
         return findMin( root ).element;
     }
 
+    /**
+     * Calls the private method deleteMin to delete the minimum value in the AVL Tree
+     */
     public  void  deleteMin( ){
 
         root =  deleteMin(root);
@@ -105,12 +108,12 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
 
     /**
      * Find an item in the tree.
-     * @param x the item to search for.
+     * @param element the item to search for.
      * @return true if x is found.
      */
-    public boolean contains( AnyType x )
+    public boolean contains( AnyType element)
     {
-        return contains( x, root );
+        return contains(element, root );
     }
 
     /**
@@ -144,26 +147,26 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
 
     private static final int ALLOWED_IMBALANCE = 1;
 
-    // Assume t is either balanced or within one of being balanced
-    private AvlNode<AnyType> balance( AvlNode<AnyType> t )
+    // Assume currentNode is either balanced or within one of being balanced
+    private AvlNode<AnyType> balance( AvlNode<AnyType> currentNode )
     {
-        if( t == null )
-            return t;
+        if( currentNode == null )
+            return currentNode;
 
-        if( height( t.left ) - height( t.right ) > ALLOWED_IMBALANCE )
-            if( height( t.left.left ) >= height( t.left.right ) )
-                t = rightRotation( t );
+        if( height( currentNode.left ) - height( currentNode.right ) > ALLOWED_IMBALANCE )
+            if( height( currentNode.left.left ) >= height( currentNode.left.right ) )
+                currentNode = rightRotation( currentNode );
             else
-                t = doubleRightRotation( t );
+                currentNode = doubleRightRotation( currentNode );
         else
-        if( height( t.right ) - height( t.left ) > ALLOWED_IMBALANCE )
-            if( height( t.right.right ) >= height( t.right.left ) )
-                t = leftRotation( t );
+        if( height( currentNode.right ) - height( currentNode.left ) > ALLOWED_IMBALANCE )
+            if( height( currentNode.right.right ) >= height( currentNode.right.left ) )
+                currentNode = leftRotation( currentNode );
             else
-                t = doubleLeftRotation( t );
+                currentNode = doubleLeftRotation( currentNode );
 
-        t.height = Math.max( height( t.left ), height( t.right ) ) + 1;
-        return t;
+        currentNode.height = Math.max( height( currentNode.left ), height( currentNode.right ) ) + 1;
+        return currentNode;
     }
 
     public void checkBalance( )
@@ -171,108 +174,105 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
         checkBalance( root );
     }
 
-    private int checkBalance( AvlNode<AnyType> t )
+    private int checkBalance( AvlNode<AnyType> currentNode )
     {
-        if( t == null )
+        if( currentNode == null )
             return -1;
 
-        if( t != null )
-        {
-            int hl = checkBalance( t.left );
-            int hr = checkBalance( t.right );
-            if( Math.abs( height( t.left ) - height( t.right ) ) > 1 ||
-                    height( t.left ) != hl || height( t.right ) != hr )
-                System.out.println( "\n\n***********************OOPS!!" );
-        }
+        int leftHeight = checkBalance(currentNode.left);
+        int rightHeight = checkBalance( currentNode.right );
+        if( Math.abs( height( currentNode.left ) - height( currentNode.right ) ) > 1 ||
+                height( currentNode.left ) != leftHeight || height( currentNode.right ) != rightHeight)
+            System.out.println( "\n\n***********************OOPS!!" );
 
-        return height( t );
+        return height( currentNode );
     }
 
 
     /**
      * Internal method to insert into a subtree.  Duplicates are allowed
-     * @param x the item to insert.
-     * @param t the node that roots the subtree.
+     * @param element the item to insert.
+     * @param currentNode the node that roots the subtree.
      * @return the new root of the subtree.
      */
-    private AvlNode<AnyType> insert( AnyType x, AvlNode<AnyType> t )
+    private AvlNode<AnyType> insert( AnyType element, AvlNode<AnyType> currentNode )
     {
-        if( t == null )
-            return new AvlNode<>( x, null, null );
+        if( currentNode == null )
+            return new AvlNode<>( element, null, null );
 
-        int compareResult = x.compareTo( t.element );
+        int compareResult = element.compareTo( currentNode.element );
 
         if( compareResult < 0 )
-            t.left = insert( x, t.left );
+            currentNode.left = insert( element, currentNode.left );
         else
-            t.right = insert( x, t.right );
+            currentNode.right = insert( element, currentNode.right );
 
-        return balance( t );
+        return balance( currentNode );
     }
 
     /**
      * Internal method to find the smallest item in a subtree.
-     * @param t the node that roots the tree.
+     * @param currentNode the node that roots the tree.
      * @return node containing the smallest item.
      */
-    private AvlNode<AnyType> findMin( AvlNode<AnyType> t )
+    private AvlNode<AnyType> findMin( AvlNode<AnyType> currentNode )
     {
-        if( t == null )
-            return t;
+        if( currentNode == null )
+            return currentNode;
 
-        while( t.left != null )
-            t = t.left;
-        return t;
+        while( currentNode.left != null )
+            currentNode = currentNode.left;
+        return currentNode;
     }
 
     /**
      * Finds and deletes the minimum node (the left-most node)
-     * @param t The current node
+     * @param currentNode The current node
      * @return The node after deleting
      */
-    private AvlNode<AnyType> deleteMin( AvlNode<AnyType> t )
+    private AvlNode<AnyType> deleteMin( AvlNode<AnyType> currentNode )
     {
-        if (t == null) {
+        if (currentNode == null) {
             return null;
         }
-        if (t.left == null) {
-            return t.right;
+        if (currentNode.left == null) {
+            return currentNode.right;
         }
-        t.left = deleteMin(t.left);
-        return balance(t);
+        currentNode.left = deleteMin(currentNode.left);
+        return balance(currentNode);
     }
 
     /**
      * Internal method to find the largest item in a subtree.
-     * @param t the node that roots the tree.
+     * @param currentNode the node that roots the tree.
      * @return node containing the largest item.
      */
-    private AvlNode<AnyType> findMax( AvlNode<AnyType> t )
+    private AvlNode<AnyType> findMax( AvlNode<AnyType> currentNode )
     {
-        if( t == null )
-            return t;
+        if( currentNode == null )
+            return currentNode;
 
-        while( t.right != null )
-            t = t.right;
-        return t;
+        while( currentNode.right != null )
+            currentNode = currentNode.right;
+        return currentNode;
     }
 
     /**
      * Internal method to find an item in a subtree.
-     * @param x is item to search for.
-     * @param t the node that roots the tree.
-     * @return true if x is found in subtree.
+     * @param element is item to search for.
+     * @param currentNode the node that roots the tree.
+     * @return true if element is found in subtree.
      */
-    private boolean contains( AnyType x, AvlNode<AnyType> t )
+    private boolean contains( AnyType element, AvlNode<AnyType> currentNode )
     {
-        while( t != null )
+        while( currentNode != null )
         {
-            int compareResult = x.compareTo( t.element );
+            int compareResult = element.compareTo( currentNode.element );
 
             if( compareResult < 0 )
-                t = t.left;
+                currentNode = currentNode.left;
             else if( compareResult > 0 )
-                t = t.right;
+                currentNode = currentNode.right;
             else
                 return true;    // Match
         }
@@ -282,24 +282,24 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
 
     /**
      * Internal method to print a subtree in sorted order.
-     * @param t the node that roots the tree.
+     * @param currentNode the node that roots the tree.
      */
-    private void printTree( AvlNode<AnyType> t, String indent )
+    private void printTree( AvlNode<AnyType> currentNode, String indent )
     {
-        if( t != null )
+        if( currentNode != null )
         {
-            printTree( t.right, indent+"   " );
-            System.out.println( indent+ t.element + "("+ t.height  +")" );
-            printTree( t.left, indent+"   " );
+            printTree( currentNode.right, indent+"   " );
+            System.out.println( indent+ currentNode.element + "("+ currentNode.height  +")" );
+            printTree( currentNode.left, indent+"   " );
         }
     }
 
     /**
-     * Return the height of node t, or -1, if null.
+     * Return the height of node currentNode, or -1, if null.
      */
-    private int height( AvlNode<AnyType> t )
-    {   if (t==null) return -1;
-        return t.height;
+    private int height( AvlNode<AnyType> currentNode )
+    {   if (currentNode==null) return -1;
+        return currentNode.height;
     }
 
     /**
@@ -307,13 +307,13 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
      * For AVL trees, this is a single rotation for case 1.
      * Update heights, then return new root.
      */
-    private AvlNode<AnyType> rightRotation(AvlNode<AnyType> t )
+    private AvlNode<AnyType> rightRotation(AvlNode<AnyType> currentNode )
     {
-        AvlNode<AnyType> theLeft = t.left;
-        t.left = theLeft.right;
-        theLeft.right = t;
-        t.height = Math.max( height( t.left ), height( t.right ) ) + 1;
-        theLeft.height = Math.max( height( theLeft.left ), t.height ) + 1;
+        AvlNode<AnyType> theLeft = currentNode.left;
+        currentNode.left = theLeft.right;
+        theLeft.right = currentNode;
+        currentNode.height = Math.max( height( currentNode.left ), height( currentNode.right ) ) + 1;
+        theLeft.height = Math.max( height( theLeft.left ), currentNode.height ) + 1;
         return theLeft;
     }
 
@@ -322,13 +322,13 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
      * For AVL trees, this is a single rotation for case 4.
      * Update heights, then return new root.
      */
-    private AvlNode<AnyType> leftRotation(AvlNode<AnyType> t )
+    private AvlNode<AnyType> leftRotation(AvlNode<AnyType> currentNode )
     {
-        AvlNode<AnyType> theRight = t.right;
-        t.right = theRight.left;
-        theRight.left = t;
-        t.height = Math.max( height( t.left ), height( t.right ) ) + 1;
-        theRight.height = Math.max( height( theRight.right ), t.height ) + 1;
+        AvlNode<AnyType> theRight = currentNode.right;
+        currentNode.right = theRight.left;
+        theRight.left = currentNode;
+        currentNode.height = Math.max( height( currentNode.left ), height( currentNode.right ) ) + 1;
+        theRight.height = Math.max( height( theRight.right ), currentNode.height ) + 1;
         return theRight;
     }
 
@@ -338,10 +338,10 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
      * For AVL trees, this is a double rotation for case 2.
      * Update heights, then return new root.
      */
-    private AvlNode<AnyType> doubleRightRotation( AvlNode<AnyType> t )
+    private AvlNode<AnyType> doubleRightRotation( AvlNode<AnyType> currentNode)
     {
-        t.left = leftRotation( t.left );
-        return rightRotation( t );
+        currentNode.left = leftRotation( currentNode.left );
+        return rightRotation(currentNode);
 
     }
 
@@ -351,10 +351,10 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
      * For AVL trees, this is a double rotation for case 3.
      * Update heights, then return new root.
      */
-    private AvlNode<AnyType> doubleLeftRotation(AvlNode<AnyType> t )
+    private AvlNode<AnyType> doubleLeftRotation(AvlNode<AnyType> currentNode )
     {
-        t.right = rightRotation( t.right );
-        return leftRotation( t );
+        currentNode.right = rightRotation( currentNode.right );
+        return leftRotation( currentNode );
     }
 
     private static class AvlNode<AnyType>
@@ -365,11 +365,11 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
             this( theElement, null, null );
         }
 
-        AvlNode( AnyType theElement, AvlNode<AnyType> lt, AvlNode<AnyType> rt )
+        AvlNode(AnyType theElement, AvlNode<AnyType> leftChild, AvlNode<AnyType> rightChild )
         {
             element  = theElement;
-            left     = lt;
-            right    = rt;
+            left     = leftChild;
+            right    = rightChild;
             height   = 0;
         }
 

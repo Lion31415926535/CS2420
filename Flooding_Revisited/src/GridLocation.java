@@ -21,12 +21,20 @@ public  class GridLocation implements Comparable<GridLocation>{
         return sb;
     }
 
+    /**
+     * Compares the whenFlood of two grid locations.
+     * If this grid location is less than the other one, it returns -1.
+     * Returns 0 if they are equal
+     * Returns 1 if this one is greater than the other
+     * @param otherLocation the object to be compared.
+     * @return -1,0,1 depending on if it is less than, equal to, or greater than
+     */
     @Override
-    public int compareTo(GridLocation g2) {
-        if (this.whenFlood < g2.whenFlood) {
+    public int compareTo(GridLocation otherLocation) {
+        if (this.whenFlood < otherLocation.whenFlood) {
             return -1;
         }
-        if (this.whenFlood > g2.whenFlood) {
+        if (this.whenFlood > otherLocation.whenFlood) {
             return 1;
         }
         return 0;
