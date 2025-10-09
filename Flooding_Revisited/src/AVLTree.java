@@ -232,12 +232,17 @@ public class AVLTree<AnyType extends Comparable<? super AnyType>>
      */
     private AvlNode<AnyType> deleteMin( AvlNode<AnyType> currentNode )
     {
+        // If the root is null, then return null
         if (currentNode == null) {
             return null;
         }
+
+        // If this is the leftmost node, return its right child
         if (currentNode.left == null) {
             return currentNode.right;
         }
+
+        // Recursively find the leftmost node and rebalance the tree after deletion
         currentNode.left = deleteMin(currentNode.left);
         return balance(currentNode);
     }

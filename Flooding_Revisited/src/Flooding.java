@@ -204,7 +204,7 @@ public class Flooding {
                     new GridLocation(prev.row, prev.col - 1)};
 
             for (GridLocation neighbor : neighbors) {
-                // If valid neighbor then calculate its whenFlood value
+                // If neighbor is valid then calculate its whenFlood value
                 if (validNeighbor(neighbor)) {
                     int newFlood = Math.max(terrain[neighbor.row][neighbor.col], Math.min(whenFlood[neighbor.row][neighbor.col], whenFlood[prev.row][prev.col]));
 
