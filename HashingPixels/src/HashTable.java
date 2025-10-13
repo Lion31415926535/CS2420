@@ -283,8 +283,79 @@ public class HashTable<E>
 
     // Simple main
     public static void main( String [ ] args ) {
-        HashTable<String> H = new HashTable<>();
-// Add your test code here.
+        HashTable<Pair> H = new HashTable<>();
+
+        // Test Insertion
+        Pair pair1 = new Pair("James", 42);
+        if (H.insert(pair1)) {
+            System.out.printf("%s was inserted\n", pair1.get1());
+        } else {
+            System.out.printf("%s wasn't inserted\n", pair1.get1());
+        }
+
+        Pair pair2 = new Pair("Harry", 11);
+        if (H.insert(pair2)) {
+            System.out.printf("%s was inserted\n", pair2.get1());
+        } else {
+            System.out.printf("%s wasn't inserted\n", pair2.get1());
+        }
+
+        // Insert a duplicate, should print that it wasn't inserted
+        if (H.insert(pair1)) {
+            System.out.printf("%s was inserted\n", pair1.get1());
+        } else {
+            System.out.printf("%s wasn't inserted\n", pair1.get1());
+        }
+        System.out.println();
+
+        // Test Find
+        // Should print out each pair
+        System.out.println(H.find(pair1));
+        System.out.println(H.find(pair2));
+        System.out.println();
+
+        // Test Delete
+        H.remove(pair2);
+        // Should print null because pair2 was deleted
+        System.out.println(H.find(pair2));
+
+        Pair pair3 = new Pair("Lily", 45);
+
+        // Should print that pair3 wasn't deleted because pair 3 wasn't in the hash table
+        if (H.remove(pair3)) {
+            System.out.printf("%s was deleted", pair3.get1());
+        } else {
+            System.out.printf("%s wasn't deleted", pair3.get1());
+        }
+        System.out.println();
+
+        // Test Changing Values
+        System.out.println(H.find(pair1));
+        H.find(pair1).changeSecond(85);
+        System.out.println(H.find(pair1));
+        System.out.println();
+
+        // Test Initial Size
+        // Should create a hash table with size 7, since 7 is next prime after 6.
+        HashTable<Pair> H2 = new HashTable<>(6);
+
+
+        // Test Rehash
+        // Creates an array of pairs greater than the size of the table
+        Pair[] pairs = new Pair[8];
+        for (int i = 0; i < pairs.length; i++) {
+            pairs[i] = new Pair(String.format("pair%d", i),i);
+        }
+
+        // Adds more pairs than the size of the table
+        // Shouldn't cause an error due to rehashing
+        for (Pair pair : pairs) {
+            if (H2.insert(pair)) {
+                System.out.printf("%s was added\n", pair.get1());
+            }
+        }
+        System.out.println();
+
     }
 }
 
