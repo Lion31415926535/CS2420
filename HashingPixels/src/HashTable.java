@@ -82,6 +82,10 @@ public class HashTable<E>
         occupiedCt = 0;
         currentActiveEntries = 0;
 
+        // Resets the average probe count
+        this.totalUses = 0;
+        this.totalProbeCount = 0;
+
         // Copy table over
         for( HashEntry<E> entry : oldArray )
             if( entry != null && entry.isActive )
@@ -96,19 +100,33 @@ public class HashTable<E>
      */
     private int findPos( E x )
     {
+        int probeCount = 1;
         int offset = 1;
         int currentPos = myhash( x );
 
         while( array[ currentPos ] != null &&
                 !array[ currentPos ].element.equals( x ) )
         {
+            probeCount++;
             currentPos += offset;  // Compute ith probe
             offset += 2;
             if( currentPos >= array.length )
                 currentPos -= array.length;
         }
+        this.totalProbeCount += probeCount;
+        this.totalUses++;
 
         return currentPos;
+    }
+
+    /**
+     * Returns the average probe count needed for adding, deleting, finding, etc.
+     * The total probe count and total uses are kept track of and updated each time findPos is called
+     * The average probe count restarts when rehashing occurs since that would affect, and should lower, the average
+     * @return The average probe count per operation
+     */
+    public float getAverageProbeCount() {
+        return (float) this.totalProbeCount / this.totalUses;
     }
 
     /**
@@ -233,6 +251,9 @@ public class HashTable<E>
     private int occupiedCt;         // The number of occupied cells: active or deleted
     private int currentActiveEntries;                  // Current size
 
+    private int totalProbeCount;
+    private int totalUses;
+
     /**
      * Internal method to allocate array.
      * @param arraySize the size of the array.
@@ -346,16 +367,18 @@ public class HashTable<E>
 
         // Test Rehash
         // Creates an array of pairs greater than the size of the table
-        Pair[] pairs = new Pair[20];
+        Pair[] pairs = new Pair[200];
         for (int i = 0; i < pairs.length; i++) {
             pairs[i] = new Pair(String.format("pair%d", i),i);
         }
 
         // Adds more pairs than the size of the table
         // Shouldn't cause an error due to rehashing
+        // We also see the average probe count generally increasing until a rehash when it goes back to down to 1
         for (Pair pair : pairs) {
             if (H2.insert(pair)) {
                 System.out.printf("%s was added\n", pair.get1());
+                System.out.println(H2.getAverageProbeCount());
             }
         }
         System.out.println();
