@@ -300,8 +300,9 @@ public class HashTable<E>
             System.out.printf("%s wasn't inserted\n", pair2.get1());
         }
 
-        // Insert a duplicate, should print that it wasn't inserted
-        if (H.insert(pair1)) {
+        // Insert a duplicate key, should print that it wasn't inserted
+        Pair pair1Copy = new Pair("James", 25);
+        if (H.insert(pair1Copy)) {
             System.out.printf("%s was inserted\n", pair1.get1());
         } else {
             System.out.printf("%s wasn't inserted\n", pair1.get1());
@@ -312,6 +313,8 @@ public class HashTable<E>
         // Should print out each pair
         System.out.println(H.find(pair1));
         System.out.println(H.find(pair2));
+        // Should print out pair 1, not the copy since it will only find using the key
+        System.out.println(H.find(pair1Copy));
         System.out.println();
 
         // Test Delete
@@ -331,6 +334,7 @@ public class HashTable<E>
 
         // Test Changing Values
         System.out.println(H.find(pair1));
+        // Change the value of the object found at pair1 key
         H.find(pair1).changeSecond(85);
         System.out.println(H.find(pair1));
         System.out.println();
@@ -342,7 +346,7 @@ public class HashTable<E>
 
         // Test Rehash
         // Creates an array of pairs greater than the size of the table
-        Pair[] pairs = new Pair[8];
+        Pair[] pairs = new Pair[20];
         for (int i = 0; i < pairs.length; i++) {
             pairs[i] = new Pair(String.format("pair%d", i),i);
         }
