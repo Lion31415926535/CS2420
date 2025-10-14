@@ -1,4 +1,4 @@
-public class Pair {
+public class Pair implements Comparable{
     private String first;
     private int second;
 
@@ -41,13 +41,21 @@ public class Pair {
     }
 
     /**
-     * Compares the first value (key) of the pairs
-     * @param otherPair The other Pair to compare to
+     * Compares this pair with an object.
+     * If the object isn't a Pair, then it just compares the objects
+     * If the object is a Pair, then it compares their first values
+     * @param otherObject The other Pair to compare to
      * @return negative if less than, positive if greater than, and 0 if equal
      */
-    public int compareTo(Pair otherPair) {
+    @Override
+    public int compareTo(Object otherObject) {
+        if (!(otherObject instanceof Pair)) {
+            return this.compareTo(otherObject);
+        }
+        Pair otherPair = (Pair) otherObject;
         return this.first.compareTo(otherPair.first);
     }
+
 
     /**
      * Checks if this pair is equal to another object

@@ -10,6 +10,8 @@
 // void makeEmpty( )      --> Remove all items
 
 
+import java.util.ArrayList;
+
 /**
  * Probing table implementation of hash tables.
  * Note that all "matching" is based on the equals method.
@@ -127,6 +129,21 @@ public class HashTable<E>
      */
     public float getAverageProbeCount() {
         return (float) this.totalProbeCount / this.totalUses;
+    }
+
+    /**
+     * Returns an ArrayList of all elements in the table
+     * Iterates through the hash table and adds all active, non-null elements to an array list
+     * @return ArrayList of all active elements in the table
+     */
+    public ArrayList<E> getAll() {
+        ArrayList<E> allData = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null && array[i].isActive) {
+                allData.add(array[i].element);
+            }
+        }
+        return allData;
     }
 
     /**
@@ -367,7 +384,7 @@ public class HashTable<E>
 
         // Test Rehash
         // Creates an array of pairs greater than the size of the table
-        Pair[] pairs = new Pair[200];
+        Pair[] pairs = new Pair[100];
         for (int i = 0; i < pairs.length; i++) {
             pairs[i] = new Pair(String.format("pair%d", i),i);
         }
@@ -383,6 +400,16 @@ public class HashTable<E>
         }
         System.out.println();
 
+
+        // Test getAll()
+        ArrayList<Pair> getAllList = H2.getAll();
+
+        // Should print all elements but not in sorted order
+        System.out.println(getAllList);
+        // Sorts the elements
+        getAllList.sort(null);
+        // Should print all elements in ascending order by key
+        System.out.println(getAllList);
     }
 }
 
